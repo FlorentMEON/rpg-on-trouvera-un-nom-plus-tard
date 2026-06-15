@@ -1,5 +1,7 @@
 package com.labyrinthe;
 
+import com.Moteur.Jeu;
+import com.entities.Player;
 import com.labyrinthe.cases.Murs;
 import com.labyrinthe.cases.Vide;
 
@@ -58,6 +60,8 @@ public class Chargement {
 
         // IMPORTANT : On crée le tableau en [y][x] -> [ligne][colonne]
         Labyrinthe laby = new  Labyrinthe(largeur, hauteur);
+        Jeu jeu = new Jeu(laby);
+        Player pj = null;
 
         // Créer le laby (y = ligne, x = colonne)
         for (int y = 0; y < hauteur; y++) {
@@ -68,14 +72,20 @@ public class Chargement {
                     case '#' -> {
                         laby.setCase(x, y, new Murs());
                     }
+                    case '@' -> {
+                        laby.setCase(x, y, new Vide());
+                        Player p = new Player(x, y);
+                        jeu.player = p;
+                    }
                     default -> {
                         laby.setCase(x, y, new Vide());
                     }
                 }
             }
         }
+        jeu.entities.add(jeu.player);
 
-        return new Jeu(laby);
+        return new Jeu(jeu.player, laby, jeu.entities);
     }
 
     public static int[] calculerLMax(List<String> list){

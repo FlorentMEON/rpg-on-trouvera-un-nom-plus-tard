@@ -1,8 +1,8 @@
 package com.labyrinthe.cases;
 
-import com.AffichageJeu;
+import com.Moteur.AffichageJeu;
 import com.labyrinthe.Cases;
-import com.labyrinthe.Jeu;
+import com.Moteur.Jeu;
 import com.utils.ImageCache;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -20,7 +20,7 @@ public class Murs implements Cases {
 
     @Override
     public Pane getDisplay(){
-        ImageView iv = new ImageView(ImageCache.getImage("/images/stone_brick.png"));
+        ImageView iv = new ImageView(ImageCache.getImage("/images/mur.png"));
         iv.setFitWidth(AffichageJeu.TAILLE);
         iv.setPreserveRatio(true);
 
