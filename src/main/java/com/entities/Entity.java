@@ -4,11 +4,11 @@ import com.Moteur.Controler;
 import com.Moteur.Jeu;
 import javafx.scene.layout.Pane;
 
-public abstract class Entities {
+public abstract class Entity {
     public int x;
     public int y;
 
-    public Entities(int x, int y){
+    public Entity(int x, int y){
         this.x = x;
         this.y = y;
     }

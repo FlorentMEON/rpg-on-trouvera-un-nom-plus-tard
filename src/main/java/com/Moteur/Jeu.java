@@ -1,6 +1,6 @@
 package com.Moteur;
 
-import com.entities.Entities;
+import com.entities.Entity;
 import com.entities.Player;
 import com.labyrinthe.Labyrinthe;
 import javafx.scene.Node;
@@ -13,7 +13,7 @@ public class Jeu {
     public Labyrinthe laby;
     public Controler controler;
     public Player player;
-    public List<Entities> entities;
+    public List<Entity> entities;
 
     public Jeu(Labyrinthe laby, Player player) {
         this.laby = laby;
@@ -22,7 +22,7 @@ public class Jeu {
         this.entities = new ArrayList<>();
     }
 
-    public Jeu(Player personnage,  Labyrinthe laby, List<Entities> entities) {
+    public Jeu(Player personnage,  Labyrinthe laby, List<Entity> entities) {
         this.controler = new Controler();
         this.player = personnage;
         this.laby = laby;
@@ -38,7 +38,7 @@ public class Jeu {
 
     public boolean checkCollision(int x, int y) {
         boolean res = true;
-        for (Entities m : entities) {
+        for (Entity m : entities) {
             if (m.getX() == x && m.getY() == y) {
                 return false;
             }
@@ -60,7 +60,7 @@ public class Jeu {
                 root.getChildren().add(pane);
             }
         }
-        for (Entities entity : entities) {
+        for (Entity entity : entities) {
             Pane pane = entity.getDisplay();
             pane.setLayoutX(AffichageJeu.TAILLE * entity.getX());
             pane.setLayoutY(AffichageJeu.TAILLE * entity.getY());

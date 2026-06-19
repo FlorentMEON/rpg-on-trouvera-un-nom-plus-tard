@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
-public class Player extends Entities {
+public class Player extends Entity {
     public int PV;
 
     public Player(int x,int y){
