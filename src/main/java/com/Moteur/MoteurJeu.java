@@ -56,17 +56,25 @@ public class MoteurJeu {
             }
         });
 
+        // Moteur VISUEL
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(50), // Ici, on règle les fps du joueur
+                        event -> {
+                    jeu.updateDisplay(scene);
+                })
+        );
+
+        // Moteur LOGIC
+        Timeline timeline2 = new Timeline();
+        timeline2.setCycleCount(Timeline.INDEFINITE);
+        timeline2.getKeyFrames().add(
                 new KeyFrame(Duration.millis(100), event -> {
-                    jeu.player.evoluer(jeu.controler, jeu);
-                    StackPane root = (StackPane) scene.getRoot();
-                    root.getChildren().clear();
-                    root.getChildren().add(jeu.getDisplay());
                     jeu.player.evoluer(jeu.controler, jeu);
                 })
         );
+        timeline2.play();
         timeline.play();
 
         stage.setScene(scene);

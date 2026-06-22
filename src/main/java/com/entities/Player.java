@@ -45,4 +45,8 @@ public class Player extends Entity {
         x = newX;
         y = newY;
     }
+
+    public String toString(){
+        return ("Player : " + x + " " + y);
+    }
 }
