@@ -4,6 +4,7 @@ import com.Moteur.Jeu;
 import com.entities.Player;
 import com.labyrinthe.cases.Murs;
 import com.labyrinthe.cases.Vide;
+import com.labyrinthe.cases.Water;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +72,9 @@ public class Chargement {
                 switch (ligne.charAt(x)) {
                     case '#' -> {
                         laby.setCase(x, y, new Murs());
+                    }
+                    case '%' -> {
+                        laby.setCase(x, y, new Water());
                     }
                     case '@' -> {
                         laby.setCase(x, y, new Vide());
