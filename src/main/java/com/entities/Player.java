@@ -18,7 +18,7 @@ public class Player extends Entity {
 
     @Override
     public Pane getDisplay() {
-        ImageView imageView = new ImageView(ImageCache.getImage("/images/player.png"));
+        ImageView imageView = new ImageView(ImageCache.getImage("/images/entities/player/player.png"));
         StackPane pane = new StackPane(imageView);
         imageView.setFitHeight(AffichageJeu.TAILLE);
         imageView.setPreserveRatio(true);

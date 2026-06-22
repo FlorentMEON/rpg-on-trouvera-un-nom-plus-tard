@@ -1,5 +1,6 @@
 package com.Moteur;
 
+import com.settings.SettingsGraphic;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -12,15 +13,19 @@ import javafx.util.Duration;
 public class MoteurJeu {
     private Jeu jeu;
     private AffichageJeu affichageJeu;
+    private SettingsGraphic settingsGraphic;
+    public Stage stage;
 
     public MoteurJeu(Jeu jeu){
         this.jeu = jeu;
     }
 
     public void lancerJeu(Stage stage, int width, int height) {
+        this.stage = stage;
+        this.settingsGraphic = new SettingsGraphic(stage);
         // creation de l'interface graphique
-        this.affichageJeu = new AffichageJeu(jeu);
-        Scene scene = affichageJeu.getAffichageJeu();
+        this.affichageJeu = new AffichageJeu(this, jeu);
+        Scene scene = new Scene(affichageJeu.getAffichageJeu());
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
@@ -44,6 +49,10 @@ public class MoteurJeu {
                     System.out.println("DROITE");
                     System.out.println("Player : " + jeu.player.x + " " + jeu.player.y);
                 }
+                case ESCAPE -> {
+                    if (affichageJeu.getListMenu().getFirst().isDisplayed) affichageJeu.getListMenu().getFirst().isDisplayed = false;
+                    else affichageJeu.getListMenu().getFirst().isDisplayed = true;
+                }
             }
         });
 
@@ -62,7 +71,7 @@ public class MoteurJeu {
         timeline.getKeyFrames().add(
                 new KeyFrame(Duration.millis(50), // Ici, on règle les fps du joueur
                         event -> {
-                    jeu.updateDisplay(scene);
+                    affichageJeu.updateDisplay(scene);
                 })
         );
 
@@ -79,6 +88,11 @@ public class MoteurJeu {
 
         stage.setScene(scene);
         stage.setTitle("RPG");
+        stage.setFullScreen(true);
         stage.show();
+    }
+
+    public AffichageJeu getAffichageJeu() {
+        return affichageJeu;
     }
 }
