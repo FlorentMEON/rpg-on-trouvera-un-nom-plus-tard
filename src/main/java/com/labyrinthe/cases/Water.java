@@ -17,4 +17,13 @@ public class Water extends Murs{
 
         return new Pane(iv);
     }
+
+    @Override
+    public ImageView getEditor(int taille){
+        ImageView iv = new ImageView(ImageCache.getImage("/images/water.png"));
+        iv.setFitWidth(taille);
+        iv.setPreserveRatio(true);
+
+        return iv;
+    }
 }

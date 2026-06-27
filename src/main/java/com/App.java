@@ -14,10 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,6 +27,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         // Setup du jeu
+        labyrinthes.addAll(LabyLoader.loadLabys());
 
         // Affichage du menu
         StackPane root = new StackPane();
@@ -45,10 +43,10 @@ public class App extends Application {
                 "-fx-border-color: black;" +
                 "-fx-border-radius: 5;" +
                 "-fx-border-width: 2px;" +
-                "-fx-font-size: 40;" +
+                "-fx-font-size: 30;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: black;");
-        play.setOnAction(e -> {
+        play.setOnMouseClicked(e -> {
             try {
                 jeu(stage);
             } catch (IOException ex) {
@@ -65,11 +63,11 @@ public class App extends Application {
                 "-fx-border-color: black;" +
                 "-fx-border-radius: 5;" +
                 "-fx-border-width: 2px;" +
-                "-fx-font-size: 40;" +
+                "-fx-font-size: 30;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: black;"
         );
-        options.setOnAction(e -> {
+        options.setOnMouseClicked(e -> {
             try {
                 options(stage);
             } catch (IOException ex) {
@@ -77,7 +75,24 @@ public class App extends Application {
             }
         });
 
-        VBox menu = new VBox(10, play, options);
+        // Bouton MAP EDITOR
+        Button mapEditor = new Button("MAP EDITOR");
+        mapEditor.setPrefSize(300, 50);
+        mapEditor.setStyle(
+                "-fx-background-color: rgba(200, 200, 200, 0.9);" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-border-color: black;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-font-size: 30;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: black;"
+        );
+        mapEditor.setOnMouseClicked(e -> {
+            new MapEditor().displayMapEditor(stage);
+        });
+
+        VBox menu = new VBox(10, play, options, mapEditor);
         menu.setPrefSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         menu.setAlignment(Pos.CENTER);
 
@@ -96,5 +111,44 @@ public class App extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Jeu");
         stage.show();
+    }
+
+    public class MapEditor{
+        private Pane affichageMap;
+
+        public void displayMapEditor(Stage stage){
+            BorderPane root = new BorderPane();
+            int tailleCase = 20;
+
+            Pane map = new Pane();
+            Labyrinthe labyBase = labyrinthes.get(0);
+            for (int x = 0; x < labyBase.getWidth(); x++){
+                for (int y = 0; y < labyBase.getHeight(); y++){
+                    StackPane pane = new StackPane(labyBase.getCase(x, y).getEditor(tailleCase));
+                    pane.setOnMouseEntered(event -> {
+                        pane.setStyle("-fx-border-color: gold;" +
+                                "-fx-border-width: 2px");
+                        pane.setViewOrder(-1);
+                    });
+                    pane.setOnMouseExited(event -> {
+                        pane.setStyle("");
+                        pane.setViewOrder(0);
+                    });
+
+                    pane.setLayoutX((x * tailleCase));
+                    pane.setLayoutY((y * tailleCase));
+
+                    map.getChildren().add(pane);
+                }
+            }
+            root.setCenter(map);
+
+
+
+
+            stage.setScene(new Scene(root, 1600, 780));
+            stage.setTitle("MapEditor");
+            stage.show();
+        }
     }
 }

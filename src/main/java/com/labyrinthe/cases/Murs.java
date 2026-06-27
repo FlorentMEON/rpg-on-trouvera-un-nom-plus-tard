@@ -28,4 +28,13 @@ public class Murs implements Cases {
 
         return new Pane(iv);
     }
+
+    @Override
+    public ImageView getEditor(int taille) {
+        ImageView iv = new ImageView(ImageCache.getImage("/images/mur.png"));
+        iv.setFitWidth(taille);
+        iv.setPreserveRatio(true);
+
+        return iv;
+    }
 }

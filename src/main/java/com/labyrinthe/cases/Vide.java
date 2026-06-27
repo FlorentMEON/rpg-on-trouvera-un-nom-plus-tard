@@ -20,11 +20,21 @@ public class Vide implements Cases {
     @Override
     public void activation(Jeu jeu) {}
 
+    @Override
     public Pane getDisplay() {
         ImageView iv = new ImageView(ImageCache.getImage("/images/vide.png"));
         iv.setFitWidth(AffichageJeu.TAILLE);
         iv.setPreserveRatio(true);
 
         return new Pane(iv);
+    }
+
+    @Override
+    public ImageView getEditor(int taille) {
+        ImageView iv = new ImageView(ImageCache.getImage("/images/vide.png"));
+        iv.setFitWidth(taille);
+        iv.setPreserveRatio(true);
+
+        return iv;
     }
 }
