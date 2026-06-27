@@ -12,6 +12,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
@@ -141,12 +142,12 @@ public class App extends Application {
                     map.getChildren().add(pane);
                 }
             }
-            root.setCenter(map);
+            root.setCenter(new ScrollPane(map));
 
 
 
 
-            stage.setScene(new Scene(root, 1600, 780));
+            stage.setScene(new Scene(root, 1280, 720));
             stage.setTitle("MapEditor");
             stage.show();
         }
