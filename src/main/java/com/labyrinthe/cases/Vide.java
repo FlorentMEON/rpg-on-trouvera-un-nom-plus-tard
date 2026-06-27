@@ -10,6 +10,8 @@ import javafx.scene.layout.Pane;
 
 public class Vide implements Cases {
 
+    public Vide(){}
+
     @Override
     public boolean collision() {
         return true;

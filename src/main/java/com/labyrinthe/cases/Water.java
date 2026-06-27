@@ -7,6 +7,8 @@ import javafx.scene.layout.Pane;
 
 public class Water extends Murs{
 
+    public Water(){}
+
     @Override
     public Pane getDisplay(){
         ImageView iv = new ImageView(ImageCache.getImage("/images/water.png"));

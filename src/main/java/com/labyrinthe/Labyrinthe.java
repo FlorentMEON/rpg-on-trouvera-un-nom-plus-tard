@@ -56,4 +56,11 @@ public class Labyrinthe {
     public int getHeight() {
         return laby[0].length;
     }
+
+    public void setCases(Cases[][] laby){
+        this.laby = laby;
+    }
+    public Cases[][] getCases(){
+        return this.laby;
+    }
 }

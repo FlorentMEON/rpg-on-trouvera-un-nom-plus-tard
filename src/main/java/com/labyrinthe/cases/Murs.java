@@ -10,6 +10,8 @@ import javafx.scene.layout.Pane;
 public class Murs implements Cases {
     private char id = '#';
 
+    public Murs(){}
+
     @Override
     public boolean collision() {
         return false;

@@ -5,6 +5,8 @@ import com.Moteur.MoteurJeu;
 import com.guis.MenuParam;
 import com.labyrinthe.Chargement;
 import com.Moteur.Jeu;
+import com.labyrinthe.LabyLoader;
+import com.labyrinthe.Labyrinthe;
 import com.utils.ImageCache;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -19,10 +21,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App extends Application {
+    private List<Labyrinthe> labyrinthes = new ArrayList<>();
+
     @Override
     public void start(Stage stage) throws IOException {
+        // Setup du jeu
+
+        // Affichage du menu
         StackPane root = new StackPane();
         ImageView background = new ImageView(ImageCache.getImage("/images/mur.png"));
         background.setFitWidth(500);
