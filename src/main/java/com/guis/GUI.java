@@ -14,6 +14,8 @@ public abstract class GUI {
         this.moteurJeu = moteur;
     }
 
+    public GUI(){}
+
     public abstract Pane getDisplay();
 
     public void updateDisplay() {

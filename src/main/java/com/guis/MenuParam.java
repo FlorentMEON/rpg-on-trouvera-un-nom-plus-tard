@@ -14,6 +14,8 @@ public class MenuParam extends GUI{
         super(moteur);
     }
 
+    public MenuParam(){}
+
     @Override
     public Pane getDisplay() {
         BorderPane root = new BorderPane();

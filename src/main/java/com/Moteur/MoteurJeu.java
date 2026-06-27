@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -20,13 +21,14 @@ public class MoteurJeu {
         this.jeu = jeu;
     }
 
-    public void lancerJeu(Stage stage, int width, int height) {
+    public void lancerJeu(Stage stage) {
         this.stage = stage;
         this.settingsGraphic = new SettingsGraphic(stage);
         // creation de l'interface graphique
         this.affichageJeu = new AffichageJeu(this, jeu);
         Scene scene = new Scene(affichageJeu.getAffichageJeu());
 
+        // Lorsqu'on presse ces touches
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case Z -> {
@@ -56,12 +58,20 @@ public class MoteurJeu {
             }
         });
 
+        // Lorsqu'on relâche ces touches
         scene.setOnKeyReleased(e -> {
             switch (e.getCode()) {
                 case Z -> jeu.controler.move.HAUT = false;
                 case Q -> jeu.controler.move.GAUCHE = false;
                 case S -> jeu.controler.move.BAS = false;
                 case D -> jeu.controler.move.DROITE = false;
+            }
+        });
+
+        // Lorsque l'app n'est plus au 1er plan
+        stage.focusedProperty().addListener((observable, ancienEtat, nouveauEtat) -> {
+            if (!nouveauEtat) {
+                affichageJeu.getListMenu().getFirst().isDisplayed = true;
             }
         });
 
@@ -88,6 +98,7 @@ public class MoteurJeu {
 
         stage.setScene(scene);
         stage.setTitle("RPG");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setFullScreen(true);
         stage.show();
     }
