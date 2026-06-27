@@ -1,6 +1,10 @@
 package com.labyrinthe;
 
 import com.labyrinthe.cases.Vide;
+import com.utils.ImageCache;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 public class Labyrinthe {
 
@@ -55,6 +59,20 @@ public class Labyrinthe {
     }
     public int getHeight() {
         return laby[0].length;
+    }
+    public Pane getDisplay(){
+        Pane res = new Pane();
+        for (int x = 0; x < getWidth(); x++){
+            for (int y = 0; y < getHeight(); y++){
+                ImageView pane = getCase(x, y).getDisplayEditor(5);
+
+                pane.setLayoutX((x * 5));
+                pane.setLayoutY((y * 5));
+
+                res.getChildren().add(pane);
+            }
+        }
+        return res;
     }
 
     public void setCases(Cases[][] laby){

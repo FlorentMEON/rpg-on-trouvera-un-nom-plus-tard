@@ -19,7 +19,7 @@ public class Water extends Murs{
     }
 
     @Override
-    public ImageView getEditor(int taille){
+    public ImageView getDisplayEditor(int taille){
         ImageView iv = new ImageView(ImageCache.getImage("/images/water.png"));
         iv.setFitWidth(taille);
         iv.setPreserveRatio(true);

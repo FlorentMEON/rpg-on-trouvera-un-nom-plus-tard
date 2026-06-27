@@ -1,28 +1,26 @@
 package com.labyrinthe.cases;
 
 import com.Moteur.AffichageJeu;
-import com.labyrinthe.Cases;
 import com.Moteur.Jeu;
+import com.labyrinthe.Cases;
 import com.utils.ImageCache;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
-public class Murs extends Cases {
-    private char id = '#';
-
-    public Murs(){}
-
+public class Gate extends Cases {
     @Override
     public boolean collision() {
         return false;
     }
 
     @Override
-    public void activation(Jeu jeu) {}
+    public void activation(Jeu jeu) {
+
+    }
 
     @Override
-    public Pane getDisplay(){
-        ImageView iv = new ImageView(ImageCache.getImage("/images/mur.png"));
+    public Pane getDisplay() {
+        ImageView iv = new ImageView(ImageCache.getImage("/images/gate.png"));
         iv.setFitWidth(AffichageJeu.TAILLE);
         iv.setPreserveRatio(true);
 
@@ -31,7 +29,7 @@ public class Murs extends Cases {
 
     @Override
     public ImageView getDisplayEditor(int taille) {
-        ImageView iv = new ImageView(ImageCache.getImage("/images/mur.png"));
+        ImageView iv = new ImageView(ImageCache.getImage("/images/gate.png"));
         iv.setFitWidth(taille);
         iv.setPreserveRatio(true);
 

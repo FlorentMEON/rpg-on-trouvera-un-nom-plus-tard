@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 
-public class Vide implements Cases {
+public class Vide extends Cases {
 
     public Vide(){}
 
@@ -30,7 +30,7 @@ public class Vide implements Cases {
     }
 
     @Override
-    public ImageView getEditor(int taille) {
+    public ImageView getDisplayEditor(int taille) {
         ImageView iv = new ImageView(ImageCache.getImage("/images/vide.png"));
         iv.setFitWidth(taille);
         iv.setPreserveRatio(true);
