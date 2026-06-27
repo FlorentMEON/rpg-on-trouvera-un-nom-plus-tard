@@ -1,0 +1,34 @@
+.scroll-pane .viewport {
+    -fx-background-color: rgb(80, 89, 107);
+}
+
+
+
+.scroll-pane .scroll-bar .track {
+    -fx-background-color: rgb(80, 89, 107);
+}
+
+.scroll-pane .scroll-bar .increment-button, .scroll-pane .scroll-bar .decrement-button {
+    -fx-padding: 0;
+
+}
+
+.scroll-pane .corner {
+    -fx-background-color: rgb(80, 89, 107);
+}
+
+.scroll-bar:vertical {
+    -fx-pref-width: 15px;
+}
+.scroll-bar:horizontal {
+    -fx-pref-height: 15px;
+}
+
+.slider .track {
+    -fx-background-color: rgb(42, 204, 233);
+}
+
+.slider .thumb:hover {
+    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0);
+}
+

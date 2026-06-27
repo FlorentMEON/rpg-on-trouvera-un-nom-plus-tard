@@ -9,10 +9,12 @@ import com.labyrinthe.LabyLoader;
 import com.labyrinthe.Labyrinthe;
 import com.utils.ImageCache;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
@@ -115,17 +117,13 @@ public class App extends Application {
     }
 
     public class MapEditor{
-        private Pane affichageMap;
+        private Pane affichageMap = new Pane();
 
-        public void displayMapEditor(Stage stage){
-            BorderPane root = new BorderPane();
-            int tailleCase = 20;
-
-            Pane map = new Pane();
-            Labyrinthe labyBase = labyrinthes.get(0);
+        public void displayMap(Labyrinthe labyBase, int taille){
+            affichageMap.getChildren().clear();
             for (int x = 0; x < labyBase.getWidth(); x++){
                 for (int y = 0; y < labyBase.getHeight(); y++){
-                    StackPane pane = new StackPane(labyBase.getCase(x, y).getEditor(tailleCase));
+                    StackPane pane = new StackPane(labyBase.getCase(x, y).getEditor(taille));
                     pane.setOnMouseEntered(event -> {
                         pane.setStyle("-fx-border-color: gold;" +
                                 "-fx-border-width: 2px");
@@ -136,18 +134,41 @@ public class App extends Application {
                         pane.setViewOrder(0);
                     });
 
-                    pane.setLayoutX((x * tailleCase));
-                    pane.setLayoutY((y * tailleCase));
+                    pane.setLayoutX((x * taille));
+                    pane.setLayoutY((y * taille));
 
-                    map.getChildren().add(pane);
+                    affichageMap.getChildren().add(pane);
                 }
             }
-            root.setCenter(new ScrollPane(map));
+        }
+
+        public void displayMapEditor(Stage stage){
+            BorderPane root = new BorderPane();
+            root.setStyle("-fx-background-color: rgb(80, 89, 107);");
+            int[] tailleCase = {20};
+
+            // AFFICHAGE DE LA MAP
+            Labyrinthe labyBase = labyrinthes.get(0);
+            displayMap(labyBase, tailleCase[0]);
+            root.setCenter(new ScrollPane(affichageMap));
 
 
+            // BOUTON ZOOM
+            Slider zoomSlider = new Slider(10, 100, 20);
+            zoomSlider.setPadding(new Insets(5, 0, 5, 0));
+            zoomSlider.valueProperty().addListener((observable, ancienneValeur, nouvelleValeur) -> {
+                tailleCase[0] = nouvelleValeur.intValue();
+                // On efface et on redessine la carte avec la nouvelle taille !
+                displayMap(labyBase, tailleCase[0]);
+            });
+            zoomSlider.setMaxWidth(200);
+            HBox zoom = new HBox(zoomSlider);
+            zoom.setAlignment(Pos.CENTER_RIGHT);
+            root.setBottom(zoom);
 
-
-            stage.setScene(new Scene(root, 1280, 720));
+            Scene scene = new Scene(root, 1280, 720);
+            scene.getStylesheets().add(String.valueOf(getClass().getResource("/map_editor.css")));
+            stage.setScene(scene);
             stage.setTitle("MapEditor");
             stage.show();
         }
