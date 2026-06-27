@@ -8,6 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class Gate extends Cases {
+    private String link;
+
     @Override
     public boolean collision() {
         return false;
@@ -34,5 +36,14 @@ public class Gate extends Cases {
         iv.setPreserveRatio(true);
 
         return iv;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+    public String getLink() {return link;}
+
+    public String toString(){
+        return "link : " + link;
     }
 }

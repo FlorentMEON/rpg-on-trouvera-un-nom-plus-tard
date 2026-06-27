@@ -15,11 +15,11 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -203,17 +203,41 @@ public class App extends Application {
 
         public void changeCase(Cases casesSelected, int x, int y)
         {
-            if (casesSelected instanceof Gate){
-                Stage stageCases = new Stage();
-                stageCases.initOwner(primaryStage);
+            VBox root = new VBox(10);
+            root.setPadding(new Insets(10, 10, 10, 10));
+            root.setAlignment(Pos.CENTER);
+            Stage stageCases = new Stage();
+            stageCases.initOwner(primaryStage);
+            Button buttonCases = new Button("REPLACE");
+            Cases newCase;
+            if (casesSelected instanceof Gate)
+            {
+                TextField linkText = new TextField();
+                newCase = new Gate();
+                root.getChildren().addAll(casesSelected.getDisplayEditor(100), linkText);
+                Runnable remplacement = () -> {
+                    ((Gate)newCase).setLink(linkText.getText());
 
-                stageCases.setScene(new Scene(new Pane(), 500, 500));
-                stageCases.show();
-            }else {
+                    labyBase.setCase(x, y, newCase);
+                    System.out.println(newCase);
+                    displayMap();
+                    stageCases.close();
+                };
+                buttonCases.setOnMouseClicked(event -> remplacement.run());
+                linkText.setOnKeyPressed(event -> {
+                    if (event.getCode().equals(KeyCode.ENTER)) remplacement.run();
+                });
+            }
+            else
+            {
                 labyBase.setCase(x, y, casesSelected);
                 displayMap();
+                return;
             }
 
+            root.getChildren().add(buttonCases);
+            stageCases.setScene(new Scene(root));
+            stageCases.show();
         }
 
         public void displayMapEditor(Stage stage)
@@ -224,11 +248,11 @@ public class App extends Application {
 
             // 🖼️ - AFFICHAGE DE LA MAP
             displayMap();
-            root.setCenter(new ScrollPane(affichageMap));
-
+            ScrollPane map = new ScrollPane(affichageMap);
+            root.setCenter(map);
 
             // 🔎 - BOUTON ZOOM
-            Slider zoomSlider = new Slider(10, 100, 20);
+            Slider zoomSlider = new Slider(1, 100, 20);
             zoomSlider.setPadding(new Insets(5, 0, 5, 0));
             zoomSlider.valueProperty().addListener((observable, ancienneValeur, nouvelleValeur) -> {
                 taille = nouvelleValeur.intValue();
@@ -242,6 +266,8 @@ public class App extends Application {
 
             // 🛠️ - BARRE D'OUTILS
             HBox barOutils = new HBox(10);
+            barOutils.setAlignment(Pos.CENTER_LEFT);
+            barOutils.setPadding(new Insets(5, 5, 5, 5));
             HBox.setHgrow(barOutils, Priority.ALWAYS);
             //      BOUTON SAVE
             Button saveButton = new Button("SAVE");
@@ -254,7 +280,7 @@ public class App extends Application {
                 Stage stageSelectMap = new Stage();
                 stageSelectMap.initOwner(primaryStage);
 
-                TilePane tilepane = new TilePane(20, 20);
+                VBox tilepane = new VBox(20);
                 int taille = 100;
                 for (Labyrinthe laby : labyrinthes) {
                     StackPane stackPane = new StackPane(laby.getDisplay());
@@ -274,15 +300,112 @@ public class App extends Application {
             //      NOUVELLE MAP
             Button newMapButton = new Button("NEW MAP");
             newMapButton.setOnMouseClicked(event -> {
-                Labyrinthe newLaby = new Labyrinthe();
-                labyrinthes.add(newLaby);
-                labyBase = newLaby;
-                displayMap();
+                Stage stageNewMap = new Stage();
+                stageNewMap.initOwner(primaryStage);
+
+                VBox vbox = new VBox(10);
+                vbox.setAlignment(Pos.CENTER);
+
+
+                Label labelX = new Label("Taille des x:");
+                TextField textFieldX = new TextField();
+                HBox hboxX = new HBox(10, labelX, textFieldX);
+
+                Label labelY = new Label("Taille des y:");
+                TextField textFieldY = new TextField();
+                HBox hboxY = new HBox(10, labelY, textFieldY);
+
+                Button createNewMap = new Button("CREATE");
+                createNewMap.setOnMouseClicked(e -> {
+                    Labyrinthe newLaby = new Labyrinthe(Integer.parseInt(textFieldX.getText()), Integer.parseInt(textFieldY.getText()));
+                    labyrinthes.add(newLaby);
+                    labyBase = newLaby;
+                    displayMap();
+                    stageNewMap.close();
+                });
+                vbox.getChildren().addAll(hboxX, hboxY, createNewMap);
+                stageNewMap.setScene(new Scene(vbox));
+                stageNewMap.show();
             });
-            barOutils.getChildren().addAll(mapSelectorButton, newMapButton, saveButton);
+            //      EXTEND LA MAP
+            ImageView iconExtendButton = new ImageView(ImageCache.getImage("/images/editeur/icons/extend_map_icon.png"));
+            iconExtendButton.setFitWidth(20);
+            iconExtendButton.setPreserveRatio(true);
+            Button extendButton = new Button("", iconExtendButton);
+            extendButton.setOnMouseClicked(event -> {
+                Stage stageExtendMap = new Stage();
+                stageExtendMap.initOwner(primaryStage);
+
+                BorderPane paneExtendMap = new BorderPane();
+                Pane mapPreview = labyBase.getDisplay();
+                mapPreview.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+                BorderPane.setAlignment(mapPreview, Pos.CENTER);
+                paneExtendMap.setCenter(mapPreview);
+
+                Scene scene = new Scene(paneExtendMap, labyBase.getWidth()*10, labyBase.getHeight()*10);
+
+                // TOP
+                Button topButton = new Button("+");
+                topButton.setPrefWidth(150);
+                BorderPane.setAlignment(topButton, Pos.CENTER);
+                paneExtendMap.setTop(topButton);
+                topButton.setOnMouseClicked(e -> {
+                    labyBase.extenceLaby(Pos.TOP_CENTER);
+                    mapPreview.getChildren().clear();
+                    mapPreview.getChildren().add(labyBase.getDisplay());
+                    displayMap();
+                });
+                // BOTTOM
+                Button bottomButton = new Button("+");
+                bottomButton.setPrefWidth(150);
+                BorderPane.setAlignment(bottomButton, Pos.CENTER);
+                paneExtendMap.setBottom(bottomButton);
+                bottomButton.setOnMouseClicked(e -> {
+                    labyBase.extenceLaby(Pos.BOTTOM_CENTER);
+                    mapPreview.getChildren().clear();
+                    mapPreview.getChildren().add(labyBase.getDisplay());
+                    displayMap();
+                });
+                // LEFT
+                Button leftButton = new Button("+");
+                leftButton.setPrefHeight(150);
+                BorderPane.setAlignment(leftButton, Pos.CENTER);
+                paneExtendMap.setLeft(leftButton);
+                leftButton.setOnMouseClicked(e -> {
+                    labyBase.extenceLaby(Pos.CENTER_LEFT);
+                    mapPreview.getChildren().clear();
+                    mapPreview.getChildren().add(labyBase.getDisplay());
+                    displayMap();
+                });
+                // RIGHT
+                Button rightButton = new Button("+");
+                rightButton.setPrefHeight(150);
+                BorderPane.setAlignment(rightButton, Pos.CENTER);
+                paneExtendMap.setRight(rightButton);
+                rightButton.setOnMouseClicked(e -> {
+                    labyBase.extenceLaby(Pos.CENTER_RIGHT);
+                    mapPreview.getChildren().clear();
+                    mapPreview.getChildren().add(labyBase.getDisplay());
+                    displayMap();
+                });
+
+                stageExtendMap.setScene(scene);
+                stageExtendMap.show();
+            });
+            barOutils.getChildren().addAll(mapSelectorButton, newMapButton, saveButton, extendButton);
             root.setTop(barOutils);
 
 
+            root.addEventFilter(ScrollEvent.SCROLL, event -> {
+                if (event.isControlDown()){
+                    if (event.getDeltaY() > 0){
+                        zoomSlider.valueProperty().set(zoomSlider.valueProperty().get() - 5);
+                    }else if (event.getDeltaY() < 0){
+                        zoomSlider.valueProperty().set(zoomSlider.valueProperty().get() + 5);
+                    }
+                    event.consume();
+                }
+            });
             Scene scene = new Scene(root, 1280, 720);
             scene.getStylesheets().add(String.valueOf(getClass().getResource("/map_editor.css")));
             stage.setScene(scene);

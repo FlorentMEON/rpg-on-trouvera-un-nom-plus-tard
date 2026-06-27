@@ -2,6 +2,7 @@ package com.labyrinthe;
 
 import com.labyrinthe.cases.Vide;
 import com.utils.ImageCache;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -50,6 +51,48 @@ public class Labyrinthe {
                 if (laby[i][j] == avant) {
                     laby[i][j] = après;
                 }
+            }
+        }
+    }
+
+    public void extenceLaby(Pos pos){
+        Labyrinthe res;
+        switch (pos){
+            case TOP_CENTER ->  {
+                res = new Labyrinthe(this.getWidth(), this.getHeight()+1);
+                for (int x = 0; x < this.getWidth(); x++) {
+                    for (int y = 1; y < this.getHeight()+1; y++) {
+                        res.setCase(x, y, laby[x][y-1]);
+                    }
+                }
+                this.laby = res.laby;
+            }
+            case BOTTOM_CENTER ->  {
+                res = new Labyrinthe(this.getWidth(), this.getHeight()+1);
+                for (int x = 0; x < this.getWidth(); x++) {
+                    for (int y = 0; y < this.getHeight(); y++) {
+                        res.setCase(x, y, laby[x][y]);
+                    }
+                }
+                this.laby = res.laby;
+            }
+            case CENTER_LEFT ->   {
+                res = new Labyrinthe(this.getWidth()+1, this.getHeight());
+                for (int x = 1; x < this.getWidth()+1; x++) {
+                    for (int y = 0; y < this.getHeight(); y++) {
+                        res.setCase(x, y, laby[x-1][y]);
+                    }
+                }
+                this.laby = res.laby;
+            }
+            case CENTER_RIGHT ->  {
+                res = new Labyrinthe(this.getWidth()+1, this.getHeight());
+                for (int x = 0; x < this.getWidth(); x++) {
+                    for (int y = 0; y < this.getHeight(); y++) {
+                        res.setCase(x, y, laby[x][y]);
+                    }
+                }
+                this.laby = res.laby;
             }
         }
     }
