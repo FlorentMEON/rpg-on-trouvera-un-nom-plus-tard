@@ -14,11 +14,13 @@ import com.utils.ImageCache;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
@@ -41,7 +43,11 @@ public class App extends Application {
         // Setup du jeu
         labyrinthes.addAll(LabyLoader.loadLabys());
         this.primaryStage = stage;
+        hub(stage);
+    }
 
+    public void hub(Stage stage)
+    {
         // Affichage du menu
         StackPane root = new StackPane();
         ImageView background = new ImageView(ImageCache.getImage("/images/mur.png"));
@@ -72,13 +78,13 @@ public class App extends Application {
         options.setPrefSize(300, 50);
         options.setStyle(
                 "-fx-background-color: rgba(200, 200, 200, 0.9);" +
-                "-fx-background-radius: 6;" +
-                "-fx-border-color: black;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-width: 2px;" +
-                "-fx-font-size: 30;" +
-                "-fx-font-weight: bold;" +
-                "-fx-text-fill: black;"
+                        "-fx-background-radius: 6;" +
+                        "-fx-border-color: black;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-font-size: 30;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: black;"
         );
         options.setOnMouseClicked(e -> {
             try {
@@ -131,7 +137,10 @@ public class App extends Application {
         private Cases casesSelected = null;
         private Set<Class<? extends Cases>> listCases;
         private int taille;
-        Labyrinthe labyBase;
+        private Labyrinthe labyBase;
+        private List<Labyrinthe> editsLaby;
+        private int idBackup;
+        private int[] selection;
 
         private MapEditor()
         {
@@ -139,6 +148,32 @@ public class App extends Application {
             this.listCases = reflections.getSubTypesOf(Cases.class);
             this.taille = 20;
             this.labyBase = labyrinthes.get(0);
+            this.editsLaby = new ArrayList<>();
+            this.editsLaby.add(labyBase.clone());
+            this.idBackup = 0;
+            this.selection = new int[]{-1, -1, -1, -1};
+        }
+
+        public void addLabyPile(Labyrinthe laby)
+        {
+            while (editsLaby.size() > idBackup + 1) {
+                editsLaby.remove(editsLaby.size() - 1);
+            }
+
+            // 2. On ajoute la nouvelle sauvegarde (le paramètre "laby") à la fin de la liste
+            this.editsLaby.add(laby);
+
+            // 3. Limite de taille :
+            // Si on dépasse les 5 sauvegardes autorisées, on supprime la plus vieille (index 0)
+            if (this.editsLaby.size() > 5) {
+                this.editsLaby.remove(0);
+            }
+
+            // 4. On met à jour l'index de backup pour qu'il pointe sur la toute dernière sauvegarde
+            this.idBackup = this.editsLaby.size() - 1;
+
+            // Debug console
+            System.out.println("Taille historique : " + editsLaby.size() + " | Position : " + idBackup);
         }
 
         public void displayMap()
@@ -167,6 +202,7 @@ public class App extends Application {
                             throw new RuntimeException(e);
                         }
                     });
+
 
                     pane.setLayoutX((x * taille));
                     pane.setLayoutY((y * taille));
@@ -219,6 +255,7 @@ public class App extends Application {
                     ((Gate)newCase).setLink(linkText.getText());
 
                     labyBase.setCase(x, y, newCase);
+                    addLabyPile(labyBase.clone());
                     System.out.println(newCase);
                     displayMap();
                     stageCases.close();
@@ -231,6 +268,7 @@ public class App extends Application {
             else
             {
                 labyBase.setCase(x, y, casesSelected);
+                addLabyPile(labyBase.clone());
                 displayMap();
                 return;
             }
@@ -337,6 +375,7 @@ public class App extends Application {
                 stageExtendMap.initOwner(primaryStage);
 
                 BorderPane paneExtendMap = new BorderPane();
+                paneExtendMap.setStyle("-fx-background-color: rgb(80, 89, 107)");
                 Pane mapPreview = labyBase.getDisplay();
                 mapPreview.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
                 BorderPane.setAlignment(mapPreview, Pos.CENTER);
@@ -353,6 +392,7 @@ public class App extends Application {
                     labyBase.extenceLaby(Pos.TOP_CENTER);
                     mapPreview.getChildren().clear();
                     mapPreview.getChildren().add(labyBase.getDisplay());
+                    addLabyPile(labyBase.clone());
                     displayMap();
                 });
                 // BOTTOM
@@ -364,6 +404,7 @@ public class App extends Application {
                     labyBase.extenceLaby(Pos.BOTTOM_CENTER);
                     mapPreview.getChildren().clear();
                     mapPreview.getChildren().add(labyBase.getDisplay());
+                    addLabyPile(labyBase.clone());
                     displayMap();
                 });
                 // LEFT
@@ -375,6 +416,7 @@ public class App extends Application {
                     labyBase.extenceLaby(Pos.CENTER_LEFT);
                     mapPreview.getChildren().clear();
                     mapPreview.getChildren().add(labyBase.getDisplay());
+                    addLabyPile(labyBase.clone());
                     displayMap();
                 });
                 // RIGHT
@@ -386,16 +428,36 @@ public class App extends Application {
                     labyBase.extenceLaby(Pos.CENTER_RIGHT);
                     mapPreview.getChildren().clear();
                     mapPreview.getChildren().add(labyBase.getDisplay());
+                    addLabyPile(labyBase.clone());
                     displayMap();
                 });
 
                 stageExtendMap.setScene(scene);
                 stageExtendMap.show();
             });
-            barOutils.getChildren().addAll(mapSelectorButton, newMapButton, saveButton, extendButton);
+            //      BOUTON UNDO
+            Button undoButton = new Button("↩");
+            Runnable undo = () -> {
+                if (idBackup > 0){
+                    idBackup--;
+                    labyBase = editsLaby.get(idBackup).clone();
+                    displayMap();
+                }
+            };
+            //      BOUTON MENU GENERAL
+            ImageView iconHub = new ImageView(ImageCache.getImage("/images/editeur/icons/hub_icon.png"));
+            iconHub.setFitWidth(20);
+            iconHub.setPreserveRatio(true);
+            Button hubButton = new Button("", iconHub);
+            hubButton.setOnMouseClicked(e -> undo.run());
+            hubButton.setOnMouseClicked(e -> {
+                hub(stage);
+            });
+            barOutils.getChildren().addAll(hubButton, mapSelectorButton, newMapButton, saveButton, extendButton, undoButton);
             root.setTop(barOutils);
 
-
+            // RACCOURCIE CLAVIER
+            //      ZOOM sur Ctrl+molette
             root.addEventFilter(ScrollEvent.SCROLL, event -> {
                 if (event.isControlDown()){
                     if (event.getDeltaY() > 0){
@@ -406,6 +468,17 @@ public class App extends Application {
                     event.consume();
                 }
             });
+            root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                // CTRL+Z -> retour arrière/undo
+                if (event.getCode() == KeyCode.Z && event.isControlDown()) {
+                    undo.run();
+                }
+                // CTRL+S -> sauvegarde de la map actuel
+                if (event.getCode() == KeyCode.S && event.isControlDown()) {
+                    LabyLoader.saveLaby(labyrinthes);
+                }
+            });
+
             Scene scene = new Scene(root, 1280, 720);
             scene.getStylesheets().add(String.valueOf(getClass().getResource("/map_editor.css")));
             stage.setScene(scene);

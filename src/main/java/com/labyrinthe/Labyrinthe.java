@@ -21,6 +21,10 @@ public class Labyrinthe {
         }
     }
 
+    public Labyrinthe(Labyrinthe labyrinthe) {
+        laby = labyrinthe.laby;
+    }
+
     public Labyrinthe(int x, int y) {
         laby = new Cases[x][y];
 
@@ -29,6 +33,17 @@ public class Labyrinthe {
                 laby[i][j] = new Vide();
             }
         }
+    }
+
+    public Labyrinthe clone() {
+        Labyrinthe copie = new Labyrinthe(this.getWidth(), this.getHeight());
+        for (int x = 0; x < this.getWidth(); x++) {
+            for (int y = 0; y < this.getHeight(); y++) {
+                copie.setCase(x, y, this.getCase(x, y));
+            }
+        }
+
+        return copie;
     }
 
     public Cases getCase(int x, int y) {
