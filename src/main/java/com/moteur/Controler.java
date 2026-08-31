@@ -1,4 +1,4 @@
-package com.Moteur;
+package com.moteur;
 
 public class Controler {
     public Commande move;

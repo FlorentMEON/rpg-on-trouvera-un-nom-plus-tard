@@ -1,9 +1,7 @@
 package com.guis;
 
-import com.Moteur.MoteurJeu;
+import com.moteur.MoteurJeu;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 public abstract class GUI {
     public boolean isDisplayed = false;

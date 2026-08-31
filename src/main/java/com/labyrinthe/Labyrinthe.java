@@ -1,6 +1,7 @@
 package com.labyrinthe;
 
 import com.labyrinthe.cases.Vide;
+import com.labyrinthe.cases.sol.Grass;
 import com.utils.ImageCache;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
@@ -9,14 +10,15 @@ import javafx.scene.layout.StackPane;
 
 public class Labyrinthe {
 
-    private Cases[][] laby;
+    private Cases[][][] laby;
 
     public Labyrinthe() {
-        laby = new Cases[10][10];
+        laby = new Cases[10][10][2];
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                laby[i][j] = new Vide();
+                laby[i][j][0] = new Vide();
+                laby[i][j][1] = null;
             }
         }
     }
@@ -26,11 +28,12 @@ public class Labyrinthe {
     }
 
     public Labyrinthe(int x, int y) {
-        laby = new Cases[x][y];
+        laby = new Cases[x][y][2];
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                laby[i][j] = new Vide();
+                laby[i][j][0] = new Grass();
+                laby[i][j][1] = new Vide();
             }
         }
     }
@@ -39,32 +42,35 @@ public class Labyrinthe {
         Labyrinthe copie = new Labyrinthe(this.getWidth(), this.getHeight());
         for (int x = 0; x < this.getWidth(); x++) {
             for (int y = 0; y < this.getHeight(); y++) {
-                copie.setCase(x, y, this.getCase(x, y));
+                copie.setCase(x, y, 0, this.getCase(x, y, 0));
+                copie.setCase(x, y, 0, this.getCase(x, y, 0));
             }
         }
 
         return copie;
     }
 
-    public Cases getCase(int x, int y) {
+    public Cases getCase(int x, int y, int z) {
         if (x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight())
             return null;
-        else return laby[x][y];
+        else return laby[x][y][z];
     }
 
-    public void setCase(int x, int y, Cases element) {
-        laby[x][y] = element;
+    public void setCase(int x, int y, int z, Cases element) {
+        laby[x][y][z] = element;
     }
 
-    public Cases[][] getListCases(){
+    public Cases[][][] getListCases(){
         return this.laby;
     }
 
     public void setCase(Cases avant, Cases après){
         for (int i = 0; i < laby.length; i++) {
             for (int j = 0; j < laby[i].length; j++) {
-                if (laby[i][j] == avant) {
-                    laby[i][j] = après;
+                for (int k = 0; k < laby[i][j].length; k++) {
+                    if (laby[i][j][k] == avant) {
+                        laby[i][j][k] = après;
+                    }
                 }
             }
         }
@@ -77,7 +83,8 @@ public class Labyrinthe {
                 res = new Labyrinthe(this.getWidth(), this.getHeight()+1);
                 for (int x = 0; x < this.getWidth(); x++) {
                     for (int y = 1; y < this.getHeight()+1; y++) {
-                        res.setCase(x, y, laby[x][y-1]);
+                        res.setCase(x, y, 0, laby[x][y-1][0]);
+                        res.setCase(x, y, 1, laby[x][y-1][1]);
                     }
                 }
                 this.laby = res.laby;
@@ -86,7 +93,8 @@ public class Labyrinthe {
                 res = new Labyrinthe(this.getWidth(), this.getHeight()+1);
                 for (int x = 0; x < this.getWidth(); x++) {
                     for (int y = 0; y < this.getHeight(); y++) {
-                        res.setCase(x, y, laby[x][y]);
+                        res.setCase(x, y, 0, laby[x][y][0]);
+                        res.setCase(x, y, 1, laby[x][y][1]);
                     }
                 }
                 this.laby = res.laby;
@@ -95,7 +103,8 @@ public class Labyrinthe {
                 res = new Labyrinthe(this.getWidth()+1, this.getHeight());
                 for (int x = 1; x < this.getWidth()+1; x++) {
                     for (int y = 0; y < this.getHeight(); y++) {
-                        res.setCase(x, y, laby[x-1][y]);
+                        res.setCase(x, y, 0, laby[x-1][y][0]);
+                        res.setCase(x, y, 1, laby[x-1][y][1]);
                     }
                 }
                 this.laby = res.laby;
@@ -104,7 +113,8 @@ public class Labyrinthe {
                 res = new Labyrinthe(this.getWidth()+1, this.getHeight());
                 for (int x = 0; x < this.getWidth(); x++) {
                     for (int y = 0; y < this.getHeight(); y++) {
-                        res.setCase(x, y, laby[x][y]);
+                        res.setCase(x, y, 0, laby[x][y][0]);
+                        res.setCase(x, y, 1, laby[x][y][1]);
                     }
                 }
                 this.laby = res.laby;
@@ -122,21 +132,22 @@ public class Labyrinthe {
         Pane res = new Pane();
         for (int x = 0; x < getWidth(); x++){
             for (int y = 0; y < getHeight(); y++){
-                ImageView pane = getCase(x, y).getDisplayEditor(5);
+                ImageView pane = getCase(x, y, 0).getDisplayEditor(5);
+                ImageView pane2 = getCase(x, y, 1).getDisplayEditor(5);
 
                 pane.setLayoutX((x * 5));
                 pane.setLayoutY((y * 5));
 
-                res.getChildren().add(pane);
+                res.getChildren().addAll(pane, pane2);
             }
         }
         return res;
     }
 
-    public void setCases(Cases[][] laby){
+    public void setCases(Cases[][][] laby){
         this.laby = laby;
     }
-    public Cases[][] getCases(){
+    public Cases[][][] getCases(){
         return this.laby;
     }
 }

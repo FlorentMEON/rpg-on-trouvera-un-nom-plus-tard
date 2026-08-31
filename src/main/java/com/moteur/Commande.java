@@ -1,4 +1,4 @@
-package com.Moteur;
+package com.moteur;
 
 /**
  * permet de representer une commande de l'utilisateur

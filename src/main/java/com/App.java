@@ -1,36 +1,31 @@
 package com;
 
-import com.Moteur.AffichageJeu;
-import com.Moteur.MoteurJeu;
+import com.moteur.MoteurJeu;
+import com.entities.Player;
 import com.guis.MenuParam;
 import com.labyrinthe.Cases;
-import com.labyrinthe.Chargement;
-import com.Moteur.Jeu;
+import com.moteur.Jeu;
 import com.labyrinthe.LabyLoader;
 import com.labyrinthe.Labyrinthe;
 import com.labyrinthe.cases.Gate;
-import com.labyrinthe.cases.Murs;
+import com.labyrinthe.cases.Sol;
 import com.utils.ImageCache;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.reflections.Reflections;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -121,7 +116,7 @@ public class App extends Application {
     }
 
     public void jeu(Stage stage) throws IOException {
-        Jeu jeu = Chargement.chargerJeu("/map/laby.txt");
+        Jeu jeu = new Jeu(LabyLoader.loadLabys().getFirst(), new Player(5, 5));
         new MoteurJeu(jeu).lancerJeu(stage);
     }
 
@@ -141,6 +136,7 @@ public class App extends Application {
         private List<Labyrinthe> editsLaby;
         private int idBackup;
         private int[] selection;
+        private int z = 0;
 
         private MapEditor()
         {
@@ -184,7 +180,7 @@ public class App extends Application {
                     int finalX = x;
                     int finalY = y;
 
-                    StackPane pane = new StackPane(labyBase.getCase(x, y).getDisplayEditor(taille));
+                    StackPane pane = new StackPane(labyBase.getCase(x, y, z).getDisplayEditor(taille));
                     pane.setOnMouseEntered(event -> {
                         pane.setStyle("-fx-border-color: gold;" +
                                 "-fx-border-width: 2px");
@@ -195,7 +191,7 @@ public class App extends Application {
                         pane.setViewOrder(0);
                     });
                     pane.setOnMouseClicked(event -> {
-                        casesSelected = labyBase.getCase(finalX, finalY);
+                        casesSelected = labyBase.getCase(finalX, finalY, z);
                         try {
                             displayListCases(finalX, finalY);
                         } catch (Exception e) {
@@ -222,13 +218,15 @@ public class App extends Application {
             int taille = 100;
             for (Class<? extends Cases> clazz : listCases) {
                 Cases cases = clazz.getDeclaredConstructor().newInstance();
-                StackPane pane = new StackPane(cases.getDisplayEditor(taille));
-                pane.setOnMouseClicked(event -> {
-                    changeCase(cases, x, y);
-                    stageCases.close();
-                });
+                if ((z == 0 && cases instanceof Sol) || (z == 1 && !(cases instanceof Sol))) {
+                    StackPane pane = new StackPane(cases.getDisplayEditor(taille));
+                    pane.setOnMouseClicked(event -> {
+                        changeCase(cases, x, y);
+                        stageCases.close();
+                    });
 
-                tilePaneCases.getChildren().add(pane);
+                    tilePaneCases.getChildren().add(pane);
+                }
             }
 
             ScrollPane scrollPaneCases = new ScrollPane(tilePaneCases);
@@ -254,7 +252,7 @@ public class App extends Application {
                 Runnable remplacement = () -> {
                     ((Gate)newCase).setLink(linkText.getText());
 
-                    labyBase.setCase(x, y, newCase);
+                    labyBase.setCase(x, y, z, newCase);
                     addLabyPile(labyBase.clone());
                     System.out.println(newCase);
                     displayMap();
@@ -267,7 +265,7 @@ public class App extends Application {
             }
             else
             {
-                labyBase.setCase(x, y, casesSelected);
+                labyBase.setCase(x, y, z, casesSelected);
                 addLabyPile(labyBase.clone());
                 displayMap();
                 return;
@@ -444,6 +442,12 @@ public class App extends Application {
                     displayMap();
                 }
             };
+            Button swapZButton = new Button("SWAP STREAK");
+            swapZButton.setOnMouseClicked(e -> {
+                if (z == 0) z = 1;
+                else z = 0;
+                displayMap();
+            });
             //      BOUTON MENU GENERAL
             ImageView iconHub = new ImageView(ImageCache.getImage("/images/editeur/icons/hub_icon.png"));
             iconHub.setFitWidth(20);
@@ -453,7 +457,7 @@ public class App extends Application {
             hubButton.setOnMouseClicked(e -> {
                 hub(stage);
             });
-            barOutils.getChildren().addAll(hubButton, mapSelectorButton, newMapButton, saveButton, extendButton, undoButton);
+            barOutils.getChildren().addAll(hubButton, mapSelectorButton, newMapButton, saveButton, extendButton, swapZButton, undoButton);
             root.setTop(barOutils);
 
             // RACCOURCIE CLAVIER

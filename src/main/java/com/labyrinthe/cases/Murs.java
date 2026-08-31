@@ -1,11 +1,13 @@
 package com.labyrinthe.cases;
 
-import com.Moteur.AffichageJeu;
+import com.moteur.AffichageJeu;
 import com.labyrinthe.Cases;
-import com.Moteur.Jeu;
+import com.moteur.Jeu;
 import com.utils.ImageCache;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 
 public class Murs extends Cases {
     private char id = '#';
@@ -21,12 +23,16 @@ public class Murs extends Cases {
     public void activation(Jeu jeu) {}
 
     @Override
-    public Pane getDisplay(){
-        ImageView iv = new ImageView(ImageCache.getImage("/images/mur.png"));
-        iv.setFitWidth(AffichageJeu.TAILLE);
-        iv.setPreserveRatio(true);
+    public Node getDisplay(){
+        Box boxMurs = new Box(AffichageJeu.TAILLE, AffichageJeu.TAILLE, AffichageJeu.TAILLE);
+        boxMurs.setLayoutX((double) AffichageJeu.TAILLE /2);
+        boxMurs.setLayoutY(AffichageJeu.TAILLE);
 
-        return new Pane(iv);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseMap(ImageCache.getImage("/images/mur.png"));
+        boxMurs.setMaterial(material);
+
+        return boxMurs;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Graph {
     public void load(Labyrinthe laby){
         for(int x = 0; x < laby.getWidth(); x++){
             for(int y = 0; y < laby.getHeight(); y++){
-                if (!(laby.getCase(x,y) instanceof Murs)) {
+                if (!(laby.getCase(x,y,1) instanceof Murs)) {
                     Noeud noeud = new Noeud(x, y);
                     for (Arc n : getAdj(laby, new Position(x, y))) {
                         noeud.arcs.add(new Arc(n.pos.x, n.pos.y));
@@ -106,16 +106,16 @@ public class Graph {
     public List<Arc> getAdj(Labyrinthe laby, Position pos){
         List<Arc> result = new ArrayList<>();
         // x+1
-        if (laby.getCase(pos.x+1,pos.y) != null && !(laby.getCase(pos.x+1,pos.y) instanceof Murs))
+        if (laby.getCase(pos.x+1,pos.y,1) != null && !(laby.getCase(pos.x+1,pos.y,1) instanceof Murs))
             result.add(new Arc(pos.x+1,pos.y));
         // x-1
-        if (laby.getCase(pos.x-1,pos.y) != null && !(laby.getCase(pos.x-1,pos.y) instanceof Murs))
+        if (laby.getCase(pos.x-1,pos.y,1) != null && !(laby.getCase(pos.x-1,pos.y,1) instanceof Murs))
             result.add(new Arc(pos.x-1,pos.y));
         // y+1
-        if (laby.getCase(pos.x,pos.y+1) != null && !(laby.getCase(pos.x,pos.y+1) instanceof Murs))
+        if (laby.getCase(pos.x,pos.y+1,1) != null && !(laby.getCase(pos.x,pos.y+1,1) instanceof Murs))
             result.add(new Arc(pos.x,pos.y+1));
         // y-1
-        if (laby.getCase(pos.x,pos.y-1) != null && !(laby.getCase(pos.x,pos.y-1) instanceof Murs))
+        if (laby.getCase(pos.x,pos.y-1,1) != null && !(laby.getCase(pos.x,pos.y-1,1) instanceof Murs))
             result.add(new Arc(pos.x,pos.y-1));
         return result;
     }

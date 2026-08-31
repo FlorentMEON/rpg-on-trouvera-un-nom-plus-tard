@@ -1,7 +1,7 @@
 package com.guis;
 
-import com.Moteur.AffichageJeu;
-import com.Moteur.MoteurJeu;
+import com.moteur.AffichageJeu;
+import com.moteur.MoteurJeu;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

@@ -1,16 +1,16 @@
 package com.entities;
 
-import com.Moteur.Controler;
-import com.Moteur.Jeu;
+import com.GameObject;
+import com.moteur.Controler;
+import com.moteur.Jeu;
 import javafx.scene.layout.Pane;
 
-public abstract class Entity {
-    public int x;
-    public int y;
+public abstract class Entity extends GameObject {
+    public double speed;
 
-    public Entity(int x, int y){
-        this.x = x;
-        this.y = y;
+    public Entity(double x, double y, double width, double height, double speed) {
+        super(x, y, width, height);
+        this.speed = speed;
     }
 
     public abstract Pane getDisplay();
@@ -20,13 +20,5 @@ public abstract class Entity {
     public void move(int x, int y){
         this.x += x;
         this.y += y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
     }
 }

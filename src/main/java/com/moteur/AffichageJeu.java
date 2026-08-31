@@ -1,11 +1,10 @@
-package com.Moteur;
+package com.moteur;
 
 import com.guis.GUI;
 import com.guis.MenuEchap;
 import com.guis.MenuParam;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.labyrinthe.cases;
 
-import com.Moteur.AffichageJeu;
+import com.moteur.AffichageJeu;
 import com.labyrinthe.Cases;
-import com.Moteur.Jeu;
+import com.moteur.Jeu;
 import com.utils.ImageCache;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -22,7 +22,7 @@ public class Vide extends Cases {
 
     @Override
     public Pane getDisplay() {
-        ImageView iv = new ImageView(ImageCache.getImage("/images/vide.png"));
+        ImageView iv = new ImageView(ImageCache.getImage("/images/editeur/icons/sol/vide.png"));
         iv.setFitWidth(AffichageJeu.TAILLE);
         iv.setPreserveRatio(true);
 
@@ -31,7 +31,7 @@ public class Vide extends Cases {
 
     @Override
     public ImageView getDisplayEditor(int taille) {
-        ImageView iv = new ImageView(ImageCache.getImage("/images/vide.png"));
+        ImageView iv = new ImageView(ImageCache.getImage("/images/editeur/icons/sol/vide.png"));
         iv.setFitWidth(taille);
         iv.setPreserveRatio(true);
 

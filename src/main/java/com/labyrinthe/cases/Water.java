@@ -1,6 +1,6 @@
 package com.labyrinthe.cases;
 
-import com.Moteur.AffichageJeu;
+import com.moteur.AffichageJeu;
 import com.utils.ImageCache;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

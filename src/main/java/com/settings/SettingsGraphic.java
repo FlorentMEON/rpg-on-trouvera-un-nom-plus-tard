@@ -1,6 +1,6 @@
 package com.settings;
 
-import com.Moteur.AffichageJeu;
+import com.moteur.AffichageJeu;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;

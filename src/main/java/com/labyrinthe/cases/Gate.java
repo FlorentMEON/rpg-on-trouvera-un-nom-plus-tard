@@ -1,7 +1,7 @@
 package com.labyrinthe.cases;
 
-import com.Moteur.AffichageJeu;
-import com.Moteur.Jeu;
+import com.moteur.AffichageJeu;
+import com.moteur.Jeu;
 import com.labyrinthe.Cases;
 import com.utils.ImageCache;
 import javafx.scene.image.ImageView;
@@ -25,6 +25,7 @@ public class Gate extends Cases {
         ImageView iv = new ImageView(ImageCache.getImage("/images/gate.png"));
         iv.setFitWidth(AffichageJeu.TAILLE);
         iv.setPreserveRatio(true);
+        iv.setTranslateY((double) AffichageJeu.TAILLE /2);
 
         return new Pane(iv);
     }
@@ -34,6 +35,7 @@ public class Gate extends Cases {
         ImageView iv = new ImageView(ImageCache.getImage("/images/gate.png"));
         iv.setFitWidth(taille);
         iv.setPreserveRatio(true);
+        iv.setTranslateZ((double) -AffichageJeu.TAILLE /2);
 
         return iv;
     }

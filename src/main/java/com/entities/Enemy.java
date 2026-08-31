@@ -1,13 +1,13 @@
 package com.entities;
 
-import com.Moteur.Controler;
-import com.Moteur.Jeu;
+import com.moteur.Controler;
+import com.moteur.Jeu;
 import javafx.scene.layout.Pane;
 
 public class Enemy extends Entity {
 
-    public Enemy(int x, int y) {
-        super(x, y);
+    public Enemy(double x, double y, double width, double height, double speed) {
+        super(x, y, width, height, speed);
     }
 
     @Override
